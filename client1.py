@@ -97,7 +97,7 @@ def create_socket_thread():
     ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
     ssl_context.check_hostname = False
     ssl_context.load_verify_locations('./server_cert.pem')
-    Host = "192.168.0.108"
+    Host = "10.14.142.232"
     Port = 12321
     ssl_client = ssl_context.wrap_socket(s1, server_hostname=Host)
     ssl_client.connect((Host, Port))
@@ -146,9 +146,9 @@ while (game == "True" or game == "true"):
                 if (win == 1):
                     print("You Won!")
                     time.sleep(2)
-                    ssl_client1.close()
                     data = '100'
                     ssl_client1.sendall(data.encode())
+                    ssl_client1.close()
                     sys.exit()
 
                 turn += 1

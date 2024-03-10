@@ -4,7 +4,7 @@ import sys
 
 global Host
 
-Host = "192.168.0.108"
+Host = "10.14.142.232"
 
 
 def bind_socket(port, s):
