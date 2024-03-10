@@ -146,6 +146,8 @@ while (game == "True" or game == "true"):
                 if (win == 1):
                     print("You Won!")
                     time.sleep(2)
+                    data = '100'
+                    ssl_client2.sendall(data.encode())
                     ssl_client2.close()
                     sys.exit()
 

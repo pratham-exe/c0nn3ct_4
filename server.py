@@ -1,5 +1,6 @@
 import socket
 import ssl
+import sys
 
 global Host
 
@@ -27,11 +28,16 @@ def accept(s):
 
 def s1_to_s2():
     data = conn1.recv(2048).decode()
+    if(data == '100'):
+        sys.exit()
     conn2.sendall(data.encode())
 
 
 def s2_to_s1():
     data = conn2.recv(2048).decode()
+    if(data == '100'):
+        sys.exit()
+
     conn1.sendall(data.encode())
 
 

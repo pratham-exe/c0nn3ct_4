@@ -147,6 +147,8 @@ while (game == "True" or game == "true"):
                     print("You Won!")
                     time.sleep(2)
                     ssl_client1.close()
+                    data = '100'
+                    ssl_client1.sendall(data.encode())
                     sys.exit()
 
                 turn += 1
