@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import socket
 import time
+import ssl
 
 pygame.init()
 
@@ -91,29 +92,37 @@ def win_cond():
 
 
 def create_socket_thread():
-    global s1
-    s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    Host = "192.168.236.137"
-    Port = 12312
-    s1.connect((Host, Port))
+    global s2
+    s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    ssl_context.check_hostname = False
+    ssl_context.load_verify_locations('./server_cert.pem')
+    Host = "192.168.0.108"
+    Port = 12322
+    ssl_client = ssl_context.wrap_socket(s2, server_hostname=Host)
+    ssl_client.connect((Host, Port))
+
+    return ssl_client
 
 
-create_socket_thread()
+ssl_client2 = create_socket_thread()
 
 # the game
 while (game == "True" or game == "true"):
     if (turn % 2 == 0):
-        data = int(s1.recv(2048).decode())
+        data = int(ssl_client2.recv(2048).decode())
         put_turn_client1(data)
         win = win_cond()
         if (win == 1):
             print("Opponent Won!")
             time.sleep(2)
+            ssl_client2.close()
             sys.exit()
         turn += 1
     else:
         for event in pygame.event.get():
             if (event.type == pygame.QUIT):
+                ssl_client2.close()
                 sys.exit()
             if (event.type == pygame.MOUSEMOTION):
                 poss = event.pos[0]
@@ -126,7 +135,7 @@ while (game == "True" or game == "true"):
                 col = int(np.floor(col / size))
                 if (validity(col)):
                     data = str(col)
-                    s1.sendall(data.encode())
+                    ssl_client2.sendall(data.encode())
                     put_turn_client2(col)
                     win = win_cond()
                 else:
@@ -136,9 +145,8 @@ while (game == "True" or game == "true"):
                     win = win_cond()
                 if (win == 1):
                     print("You Won!")
-                    print(np.flip(board, 0))
                     time.sleep(2)
+                    ssl_client2.close()
                     sys.exit()
 
                 turn += 1
-                print(np.flip(board, 0))

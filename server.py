@@ -1,8 +1,9 @@
 import socket
+import ssl
 
 global Host
 
-Host = "192.168.236.41"
+Host = "192.168.0.108"
 
 
 def bind_socket(port, s):
@@ -17,10 +18,11 @@ def bind_socket(port, s):
 
 def accept(s):
     conn, adress = s.accept()
-    conn.setblocking(True)
+    ssl_server = ssl_context.wrap_socket(conn, server_side=True)
+    ssl_server.setblocking(True)
     print("Ip: ", adress[0], " Port: ", adress[1])
 
-    return conn
+    return ssl_server
 
 
 def s1_to_s2():
@@ -37,6 +39,8 @@ if __name__ == "__main__":
     turn = 0
     s1 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s2 = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_context.load_cert_chain(certfile='./server_cert.pem', keyfile='./server_key.pem')
 
     bind_socket(12321, s1)
     conn1 = accept(s1)
