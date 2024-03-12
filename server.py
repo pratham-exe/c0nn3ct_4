@@ -4,7 +4,9 @@ import sys
 
 global Host
 
-Host = "10.14.142.232"
+Host = input("Enter Host IP : ")
+Port1 = int(input("Enter Port 1 : "))
+Port2 = int(input("Enter Port 2 : "))
 
 
 def bind_socket(port, s):
@@ -48,10 +50,10 @@ if __name__ == "__main__":
     ssl_context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     ssl_context.load_cert_chain(certfile='./server_cert.pem', keyfile='./server_key.pem')
 
-    bind_socket(12321, s1)
+    bind_socket(Port1, s1)
     conn1 = accept(s1)
 
-    bind_socket(12322, s2)
+    bind_socket(Port2, s2)
     conn2 = accept(s2)
 
     while (True):

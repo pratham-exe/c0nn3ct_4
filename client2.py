@@ -5,6 +5,9 @@ import socket
 import time
 import ssl
 
+Host = input("Enter Host IP : ")
+Port = int(input("Enter Host Port : "))
+
 pygame.init()
 
 # global variables
@@ -97,8 +100,6 @@ def create_socket_thread():
     ssl_context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
     ssl_context.check_hostname = False
     ssl_context.load_verify_locations('./server_cert.pem')
-    Host = "192.168.0.108"
-    Port = 12322
     ssl_client = ssl_context.wrap_socket(s2, server_hostname=Host)
     ssl_client.connect((Host, Port))
 
